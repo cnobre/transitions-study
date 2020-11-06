@@ -18,6 +18,7 @@ class StagedAnimation {
         this.anim_duration = 1250;
         this.anim_stages = 2;
         this.dot_size = 8;
+        this.bars = false;
         this.initVis();
     }
 
@@ -123,8 +124,8 @@ class StagedAnimation {
         let xDomain = d3.extent(vis.displayData,d=>d[vis.xAttr]); // calculates min and max values of an array
         let range = xDomain[1] - xDomain[0];
         // Update domains
-        vis.y.domain(d3.extent(vis.displayData,d=>d[vis.yAttr]));
-        vis.x.domain([xDomain[0]-range*0.1, xDomain[1]]);
+        vis.y.domain([0, d3.extent(vis.displayData,d=>d[vis.yAttr])[1]]);
+        vis.x.domain([xDomain[0]-range*0.07, xDomain[1]]);
 
         var bars = vis.svg.selectAll(".bar")
             .data(vis.displayData);
@@ -159,8 +160,6 @@ class StagedAnimation {
         vis.xAxis.scale(vis.x);
         vis.countryScale.domain(d3.range(0,vis.displayData.length));
 
-        d3.select('.xlabel').text(vis.xAttr)
-            .attr('y',vis.height + 40);
 
         vis.svg.selectAll(".bar")
             .transition()
@@ -176,8 +175,21 @@ class StagedAnimation {
             .attr("x",d=>vis.x(d[vis.xAttr]))
             .attr("y",d=>vis.y(d[vis.yAttr]));
 
+        vis.svg.select(".x-axis")
+            .transition()
+            .delay(vis.anim_duration/vis.anim_stages)
+            .duration(0)
+            .call(vis.xAxis);
+
+            
+        d3.select('.xlabel').text(vis.xAttr)
+            .transition()
+            .delay(vis.anim_duration/vis.anim_stages)
+            .duration(0)
+            .attr('y',vis.height + 40);
     
-        vis.svg.select(".x-axis").call(vis.xAxis);
+        // vis.svg.select(".x-axis")
+            // .call(vis.xAxis);
             // .selectAll("text")
             // .style("text-anchor", "end")
             // .attr("dx", "-.8em")
@@ -187,19 +199,21 @@ class StagedAnimation {
             // })
             // .text(d=>{return vis.displayData[d]['country']});
 
+
     }
     toBarChart(){
 
         let vis = this;
         vis.bars = true;
-        vis.displayData = vis.displayData.sort((a,b)=>a[vis.xAttr]>b[vis.xAttr] ? -1 :1);
+        vis.displayData = vis.displayData.sort((a,b)=>a['country']<b['country'] ? -1 :1);
 
 
-        vis.xAxis.scale(vis.countryScale);
         vis.countryScale.domain(d3.range(0,vis.displayData.length));
-
+        
+        vis.xAxis.scale(vis.countryScale);
         d3.select('.xlabel').text('Country')
             .attr('y',vis.height + 100);
+
 
         vis.svg.selectAll(".bar")
             .transition()
@@ -222,8 +236,10 @@ class StagedAnimation {
             .attr('rx',0)
             .attr('ry',0);
 
-    
-        vis.svg.select(".x-axis").call(vis.xAxis)
+
+        vis.svg.select(".x-axis")
+            
+            .call(vis.xAxis)
             .selectAll("text")
             .style("text-anchor", "end")
             .attr("dx", "-.8em")
@@ -232,6 +248,7 @@ class StagedAnimation {
                 return "rotate(-45)"
             })
             .text(d=>{return vis.displayData[d]['country']});
+            
     }
 
     onSelectionChange(selectionStart, selectionEnd){
