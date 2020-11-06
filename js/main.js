@@ -8,11 +8,11 @@ var dateParser = d3.timeParse("%Y-%m-%d");
 // (1) Load data with promises
 
 let promises = [
-    d3.csv("data/large.csv")
+    d3.csv("data/medium.csv")
 ];
 
 Promise.all(promises)
-    .then( function(data){ createVis(data)})
+    .then( function(data){createVis(data)} )
     .catch( function (err){console.log(err)} );
 
 function createVis(data){
@@ -22,7 +22,7 @@ function createVis(data){
 
     let animate = new Animate("animation", data[0]);
 
-    let otherCondition = new Animate("condition2", data[0]);
+    let stagedAnimation = new StagedAnimation("stagedAnimation", data[0]);
 
 
 

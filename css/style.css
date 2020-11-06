@@ -14,8 +14,9 @@ h1 {
 }
 
 .bar{
-	stroke-width: 3px;
+	stroke-width: 1px;
 	stroke:white;
+	fill: #93bebf;
 }
 
 h2 {
@@ -50,15 +51,11 @@ h2 {
 	fill: #94a97a;
 }
 
-.bar {
-	fill: #93bebf;
-}
-
 .time-period-value {
 	padding: 4px 10px;
-  background-color: #f5f5f5;
-  border-radius: 4px;
-  font-size: 16px;
+  	background-color: #f5f5f5;
+  	border-radius: 4px;
+  	font-size: 16px;
 }
 .time-period-divider {
 	font-size: 16px;
