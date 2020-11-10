@@ -105,8 +105,8 @@ class ScatterPlot {
         let xDomain = d3.extent(vis.displayData,d=>d[vis.xAttr])
         let range = xDomain[1] - xDomain[0]
         // Update domains
-        vis.y.domain(d3.extent(vis.displayData,d=>d[vis.yAttr]));
-        vis.x.domain([xDomain[0]-range*0.1, xDomain[1]])
+        vis.y.domain([0, d3.extent(vis.displayData,d=>d[vis.yAttr])[1]]);
+        vis.x.domain([xDomain[0]-range*0.07, xDomain[1]])
 
         console.log(vis.y.domain())
         console.log(vis.displayData)
