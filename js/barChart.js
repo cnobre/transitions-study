@@ -11,7 +11,11 @@ class BarChart {
         this.parentElement = _parentElement;
         this.data = _data;
         this.filteredData = this.data;
-        this.dataAttr = 'population_07'
+        this.dataAttr = 'co2pp_07';
+        this.margin = { top: 20, right: 20, bottom: 200, left: 50 };
+        this.width = $("#" + this.parentElement).width() - this.margin.left - this.margin.right;
+        this.height = 500 - this.margin.top - this.margin.bottom;
+
 
         this.initVis();
     }
@@ -24,16 +28,11 @@ class BarChart {
     initVis(){
         var vis = this;
 
-        vis.margin = { top: 20, right: 0, bottom: 200, left: 140 };
-
-        vis.width = $("#" + vis.parentElement).width() - vis.margin.left - vis.margin.right,
-            vis.height = 500 - vis.margin.top - vis.margin.bottom;
-
         // SVG drawing area
         vis.svg = d3.select("#" + vis.parentElement).append("svg")
             .attr("width", vis.width + vis.margin.left + vis.margin.right)
-            .attr("height", vis.height + vis.margin.top + vis.margin.bottom)
-            .append("g")
+            .attr("height", vis.height + vis.margin.top + vis.margin.bottom);
+        vis.g = vis.svg.append("g")
             .attr("transform", "translate(" + vis.margin.left + "," + vis.margin.top + ")");
 
 
@@ -51,18 +50,26 @@ class BarChart {
         vis.yAxis = d3.axisLeft()
             .scale(vis.y);
 
-        vis.svg.append("g")
+        vis.g.append("g")
             .attr("class", "x-axis axis")
             .attr("transform", "translate(0," + vis.height + ")");
 
-        vis.svg.append("g")
+        vis.g.append("g")
             .attr("class", "y-axis axis");
 
         // Axis title
-        vis.svg.append("text")
+        vis.g.append("text")
             .attr("x", -50)
             .attr("y", -8)
-            .text("Population");
+            .text("co2pp_07");
+
+        // Axis title
+        vis.g.append("text")
+            .attr('class', 'xlabel')
+            .attr("x", vis.width/2)
+            .attr("y", vis.height + 40)
+            .style('text-anchor','middle')
+            .text(vis.xAttr);
 
 
         // (Filter, aggregate, modify data)
@@ -102,8 +109,10 @@ class BarChart {
 
         vis.x.domain(d3.range(0,vis.displayData.length));
 
+        vis.g.select('.xlabel').text('Country')
+            .attr('y',vis.height + 100);
 
-        var bars = vis.svg.selectAll(".bar")
+        var bars = vis.g.selectAll(".bar")
             .data(vis.displayData)
 
         bars.enter().append("rect")
@@ -125,9 +134,9 @@ class BarChart {
         bars.exit().remove();
 
         // Call axis function with the new domain
-        vis.svg.select(".y-axis").call(vis.yAxis);
+        vis.g.select(".y-axis").call(vis.yAxis);
 
-        vis.svg.select(".x-axis").call(vis.xAxis)
+        vis.g.select(".x-axis").call(vis.xAxis)
             .selectAll("text")
             .style("text-anchor", "end")
             .attr("dx", "-.8em")

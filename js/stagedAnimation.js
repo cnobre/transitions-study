@@ -19,6 +19,10 @@ class StagedAnimation {
         this.anim_stages = 2;
         this.dot_size = 8;
         this.bars = false;
+        this.margin = { top: 20, right: 20, bottom: 200, left: 50 };
+        this.width = $("#" + this.parentElement).width() - this.margin.left - this.margin.right;
+        this.height = 500 - this.margin.top - this.margin.bottom;
+
         this.initVis();
     }
 
@@ -30,16 +34,11 @@ class StagedAnimation {
     initVis(){
         var vis = this;
 
-        vis.margin = { top: 20, right: 20, bottom: 200, left: 50 };
-
-        vis.width = $("#" + vis.parentElement).width() - vis.margin.left - vis.margin.right,
-            vis.height = 500 - vis.margin.top - vis.margin.bottom;
-
         // SVG drawing area
         vis.svg = d3.select("#" + vis.parentElement).append("svg")
             .attr("width", vis.width + vis.margin.left + vis.margin.right)
             .attr("height", vis.height + vis.margin.top + vis.margin.bottom)
-            .append("g")
+        vis.g = vis.svg.append("g")
             .attr("transform", "translate(" + vis.margin.left + "," + vis.margin.top + ")");
         
 
@@ -62,21 +61,21 @@ class StagedAnimation {
         vis.yAxis = d3.axisLeft()
             .scale(vis.y);
 
-        vis.svg.append("g")
+        vis.g.append("g")
             .attr("class", "x-axis axis")
             .attr("transform", "translate(0," + vis.height + ")");
 
-        vis.svg.append("g")
+        vis.g.append("g")
             .attr("class", "y-axis axis");
 
         // Axis title
-        vis.svg.append("text")
+        vis.g.append("text")
             .attr("x", -50)
             .attr("y", -8)
             .text(vis.yAttr);
 
         // Axis title
-        vis.svg.append("text")
+        vis.g.append("text")
             .attr('class', 'xlabel')
             .attr("x", vis.width/2)
             .attr("y", vis.height + 40)
@@ -127,7 +126,7 @@ class StagedAnimation {
         vis.y.domain([0, d3.extent(vis.displayData,d=>d[vis.yAttr])[1]]);
         vis.x.domain([xDomain[0]-range*0.07, xDomain[1]]);
 
-        var bars = vis.svg.selectAll(".bar")
+        var bars = vis.g.selectAll(".bar")
             .data(vis.displayData);
 
         bars.enter().append("rect")
@@ -145,9 +144,9 @@ class StagedAnimation {
         bars.exit().remove();
 
         // Call axis function with the new domain
-        vis.svg.select(".y-axis").call(vis.yAxis);
+        vis.g.select(".y-axis").call(vis.yAxis);
 
-        vis.svg.select(".x-axis").call(vis.xAxis);
+        vis.g.select(".x-axis").call(vis.xAxis);
 
         // vis.svg.on('click',()=>vis.bars?  vis.toScatterPlot() : vis.toBarChart());
         $('#' + vis.parentElement + 'StartBtn').on("click",()=>vis.bars?  vis.toScatterPlot() : vis.toBarChart())
@@ -161,7 +160,7 @@ class StagedAnimation {
         vis.countryScale.domain(d3.range(0,vis.displayData.length));
 
 
-        vis.svg.selectAll(".bar")
+        vis.g.selectAll(".bar")
             .transition()
             .duration(vis.anim_duration/vis.anim_stages)
             .ease(d3.easeLinear)
@@ -175,20 +174,20 @@ class StagedAnimation {
             .attr("x",d=>vis.x(d[vis.xAttr]))
             .attr("y",d=>vis.y(d[vis.yAttr]));
 
-        vis.svg.select(".x-axis")
+        vis.g.select(".x-axis")
             .transition()
             .delay(vis.anim_duration/vis.anim_stages)
             .duration(0)
             .call(vis.xAxis);
 
             
-        d3.select('.xlabel').text(vis.xAttr)
+        vis.g.select('.xlabel').text(vis.xAttr)
             .transition()
             .delay(vis.anim_duration/vis.anim_stages)
             .duration(0)
             .attr('y',vis.height + 40);
     
-        // vis.svg.select(".x-axis")
+        // vis.g.select(".x-axis")
             // .call(vis.xAxis);
             // .selectAll("text")
             // .style("text-anchor", "end")
@@ -211,11 +210,11 @@ class StagedAnimation {
         vis.countryScale.domain(d3.range(0,vis.displayData.length));
         
         vis.xAxis.scale(vis.countryScale);
-        d3.select('.xlabel').text('Country')
+        vis.g.select('.xlabel').text('Country')
             .attr('y',vis.height + 100);
 
 
-        vis.svg.selectAll(".bar")
+        vis.g.selectAll(".bar")
             .transition()
             .duration(vis.anim_duration/vis.anim_stages)
             .ease(d3.easeLinear)
@@ -237,7 +236,7 @@ class StagedAnimation {
             .attr('ry',0);
 
 
-        vis.svg.select(".x-axis")
+        vis.g.select(".x-axis")
             
             .call(vis.xAxis)
             .selectAll("text")
