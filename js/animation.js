@@ -188,11 +188,12 @@ toBarChart(){
     
     let vis = this;
     vis.bars = true;
-    vis.displayData = vis.displayData.sort((a,b)=>a[vis.xAttr]>b[vis.xAttr] ? -1 :1)
+    vis.displayData = vis.displayData.sort((a,b)=>a[vis.xAttr]>b[vis.xAttr] ? 1 :-1)
+    console.log('sorted', vis.displayData)
 
-
-    vis.xAxis.scale(vis.countryScale);
     vis.countryScale.domain(d3.range(0,vis.displayData.length));
+    vis.xAxis.scale(vis.countryScale);
+
 
     d3.select('.xlabel').text('Country')
     .attr('y',vis.height + 100)

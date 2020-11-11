@@ -8,7 +8,7 @@ var dateParser = d3.timeParse("%Y-%m-%d");
 // (1) Load data with promises
 
 let promises = [
-    d3.csv("data/large.csv")
+    d3.csv("data/medium.csv")
 ];
 
 Promise.all(promises)
@@ -27,10 +27,10 @@ function createVis(data){
 
 
 
-    // (5) Bind event handler
-    $(MyEventHandler).bind("selectionChanged", function(event, rangeStart, rangeEnd){
-        ageVis.onSelectionChange(rangeStart, rangeEnd);
-        prioVis.onSelectionChange(rangeStart, rangeEnd);
-        countVis.onSelectionChange(rangeStart, rangeEnd);
-    });
+    // // (5) Bind event handler
+    // $(MyEventHandler).bind("selectionChanged", function(event, rangeStart, rangeEnd){
+    //     ageVis.onSelectionChange(rangeStart, rangeEnd);
+    //     prioVis.onSelectionChange(rangeStart, rangeEnd);
+    //     countVis.onSelectionChange(rangeStart, rangeEnd);
+    // });
 }
