@@ -23,6 +23,7 @@ function createVis(data){
     // let animate = new Animate("animation", data[0]);
 
     let stagedAnimation = new StagedAnimation("stagedAnimation", data[0]);
+    let interpolatedAnimation = new InterpolatedAnimation("interpolatedAnimation", data[0]);
     let hardSwitch = new HardSwitch("hardSwitch", data[0]);
     let linkedHighlighting = new LinkedHighlighting("linkedHighlighting", data[0]);
 
