@@ -149,4 +149,12 @@ class ScatterPlot {
 
         vis.wrangleData();
     }
+
+    highlight(data){
+        var circles = this.svg.selectAll("circle")
+        .classed('highlight', false);
+
+        circles.data(data, function(d) { return d.country })
+            .classed('highlight', true);
+    }
 }

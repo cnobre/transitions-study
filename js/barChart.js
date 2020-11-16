@@ -156,4 +156,12 @@ class BarChart {
 
         vis.wrangleData();
     }
+
+    highlight(data){
+        var circles = this.svg.selectAll("rect")
+            .classed('highlight', false);
+
+        circles.data(data, function(d) { return d.country })
+            .classed('highlight', true);
+    }
 }
